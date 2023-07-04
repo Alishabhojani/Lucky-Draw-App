@@ -1,0 +1,175 @@
+/* Dashboard------------ */
+.main-div {
+  display: flex;
+  /* border: 1px solid black; */
+
+}
+
+.div2 {
+  flex: 0 0 5%;
+  background-color: red;
+  height: 100vh;
+  /* border: 1px solid black; */
+
+
+}
+
+.div3 {
+  flex: 1;
+  background-color: white;
+  /* border: 1px solid black; */
+  padding: 20px;
+
+}
+
+.avatar {
+  width: 40px;
+  /* Adjust the width to your desired size */
+  height: 40px;
+  /* Adjust the height to your desired size */
+  border-radius: 50%;
+  margin-left: 18px;
+  margin-top: 20px;
+}
+
+.avatar2 {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-left: 30px;
+  margin-top: 50px;
+
+}
+
+
+.avatar3 {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-left: 30px;
+  margin-top: 20px;
+
+}
+
+.avatar4 {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-left: 30px;
+  margin-top: 500px;
+
+}
+
+
+
+
+.div {
+  display: flex;
+  justify-content: space-between;
+
+
+}
+
+.button-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.search-form {
+  /* display: flex; */
+}
+
+.search-form input[type="text"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 250px
+}
+
+
+.create-button {
+  background-color: orange;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.data-table {
+  width: 100%;
+}
+
+.thh {
+  text-align: left;
+  border-bottom: 1px solid rgb(236, 233, 233);
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+
+}
+
+.elements td {
+  border-bottom: 1px solid rgb(236, 233, 233);
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.status-active {
+  background-color: rgb(99, 238, 99);
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  color: white;
+
+
+}
+
+.status-inactive {
+  background-color: #ccc;
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  color: white;
+}
+
+.leadbord {
+  border: 2px solid red;
+  border-radius: 10px;
+  width: 90px;
+  height: 30px;
+  color: red;
+  text-align: center;
+}
+
+.delete {
+  height: 20px;
+  width: 20px;
+  margin-top: 15px;
+
+
+}
+
+.leadparent {
+  display: flex;
+  justify-content: space-between;
+}
+
+.empty {
+  padding-left: 0px;
+  padding-right: 100px;
+}
+
+.empty-2 {
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.empty-3 {
+  padding-left: 100px;
+}
+
+.empty-4 {
+  padding-left: 50px;
+}
