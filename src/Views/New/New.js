@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import soundEffect from '../../Audios/Piano.mp3';
+import soundEffect from '../../Audios/soundEffect.mp3';
 
 const BackgroundSoundComponent = () => {
   const audioRef = useRef(null);
@@ -15,7 +15,7 @@ const BackgroundSoundComponent = () => {
       <audio ref={audioRef} loop autoPlay>
         <source src={soundEffect} type="audio/mp3" />
       </audio>
-      
+
     </div>
   );
 };

@@ -12,7 +12,7 @@ import { collection, getDocs, where, query, doc, getDoc, updateDoc, onSnapshot }
 import { addCode } from "../../Store/Slices/UserDataSlice";
 
 
-import soundEffect from '../../Audios/Piano.mp3';
+import soundEffect from '../../Audios/soundEffect.mp3';
 
 
 const Dashboard = () => {

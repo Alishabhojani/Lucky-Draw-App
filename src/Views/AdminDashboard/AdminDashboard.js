@@ -105,15 +105,20 @@ function AdminDashboard() {
         console.log("change>>>", change)
 
         const doc = change.doc;
-        doc.docId = doc.id
 
         // Handle document changes (added, modified, deleted)
         if (change.type === 'added') {
           console.log('New document:', doc.data());
-          luckyDraws.push({...doc.data(), docId: doc.id })
-          setTotalLuckyDraws([...totalLuckyDraws, ...luckyDraws ])
-        } 
-        
+          // luckyDraws = [...totalLuckyDraws]
+          // luckyDraws.push({ ...doc.data(), docId: doc.id })
+          // setTotalLuckyDraws(luckyDraws)
+
+          const newDocument = doc.data();
+          newDocument.docId = doc.id
+          setTotalLuckyDraws(prevDocuments => [...prevDocuments, newDocument]);
+
+        }
+
         else if (change.type === 'modified') {
           console.log('Modified document:', doc.data());
 
@@ -129,9 +134,9 @@ function AdminDashboard() {
             return newArray;
           });
 
-          
-        } 
-        
+
+        }
+
         else if (change.type === 'removed') {
           console.log('Removed document:', doc.data());
 
@@ -336,6 +341,12 @@ function AdminDashboard() {
 
       }
 
+      if (codeDoc.users.length <= 2) {
+        alert("atleast 3 members required")
+        setIsLoading(false)
+        return
+      }
+
 
 
       const docRef = doc(db, 'luckyDraws', documentTitle);
@@ -386,7 +397,8 @@ function AdminDashboard() {
       await deleteDoc(docRef);
       console.log('Document successfully deleted!');
       setIsLoading(false)
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error deleting document:', error);
     }
   };
@@ -625,7 +637,7 @@ function AdminDashboard() {
                 <td className='leadparent'>
                   <p className='leadbord' onClick={() => openLeaderboardModal(value.users)}>Participants</p>
                   <AiOutlineDelete className='delete' onClick={() => deleteDocument(value.docId)} />
-                 </td>
+                </td>
 
               </tr>
             ))}
