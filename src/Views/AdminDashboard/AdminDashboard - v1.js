@@ -69,10 +69,10 @@ function AdminDashboard() {
       const luckyDraws = [];
 
       querySnapshot.forEach((doc) => {
-        // const { expiresOn } = doc.data()
-        // const expiresOnDate = expiresOn.toDate();
+        const { expiresOn } = doc.data()
+        const expiresOnDate = expiresOn.toDate();
         let newLuckyDraw = doc.data()
-        // newLuckyDraw.expiresOn = expiresOnDate
+        newLuckyDraw.expiresOn = expiresOnDate
         // console.log(newLuckyDraw)
         luckyDraws.push(newLuckyDraw);
       });
@@ -134,16 +134,16 @@ function AdminDashboard() {
     }
 
 
-    // const dateTimeString = `${newLuckyDrawDate}T${newLuckyDrawTime}`;
-    // const dateTime = new Date(dateTimeString);
-    // const formattedDateTime = dateTime.toLocaleString('en-US', {
-    //   month: '2-digit',
-    //   day: '2-digit',
-    //   year: 'numeric',
-    //   hour: '2-digit',
-    //   minute: '2-digit',
-    //   hour12: true,
-    // });
+    const dateTimeString = `${newLuckyDrawDate}T${newLuckyDrawTime}`;
+    const dateTime = new Date(dateTimeString);
+    const formattedDateTime = dateTime.toLocaleString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
     // console.log(dateTime)
 
     const luckyDrawsCollectionRef = collection(db, 'luckyDraws');
@@ -176,7 +176,7 @@ function AdminDashboard() {
       isActive: true,
       winner: [],
       totalWinners: 0,
-      // expiresOn: Timestamp.fromDate(dateTime),
+      expiresOn: Timestamp.fromDate(dateTime),
       isStarted: false,
     };
 
@@ -192,7 +192,7 @@ function AdminDashboard() {
 
     setDisplayName(newLuckyDrawName)
     setDisplayNumber(code)
-    // setDisplayDate(formattedDateTime)
+    setDisplayDate(formattedDateTime)
 
     refreshLuckyDraws()
 
@@ -260,10 +260,10 @@ function AdminDashboard() {
       const docSnap = await getDoc(docRef);
 
       const randomIndex = Math.floor(Math.random() * codeDoc.users.length);
-      const winnerObj = { ...codeDoc.users[randomIndex] }
+      const winnerObj = {...codeDoc.users[randomIndex]}
       console.log(winnerObj)
 
-      await updateDoc(docRef, { isStarted: true, winner: [winnerObj], isActive: false });
+      await updateDoc(docRef, { isStarted: true, winner: [winnerObj] });
       alert("lucky draw started")
 
     }
@@ -381,7 +381,7 @@ function AdminDashboard() {
                 <a href="#" >
                   <BsFacebook />
                 </a>
-                <a href={`https://wa.me/?text=myLink.com/signup/${displayNumber}`} target="_blank" rel="noopener noreferrer">
+                <a href="#">
                   <IoLogoWhatsapp />
                 </a>
                 <a href="#">
@@ -427,13 +427,8 @@ function AdminDashboard() {
                   {/* <button className={value.isActive ? 'status-active' : 'status-inactive'}>
                     {value.isActive ? 'Start now' : 'Inactive'}
                   </button> */}
-                  <button className={value.isActive ? 'status-active' : 'status-inactive'} onClick={() => {
-                    value.isActive 
-                    ? startLuckyDraw(value.code)
-                    : alert("Lucky Draw already Drawn")
-                  }
-                  }>
-                    {value.isActive ? 'Start Now' : 'Completed'}
+                  <button className={value.isStarted ? 'status-inactive' : 'status-active'} onClick={() => startLuckyDraw(value.code)}>
+                    {value.isStarted ? 'done' : 'Start'}
                   </button>
                 </td>
 

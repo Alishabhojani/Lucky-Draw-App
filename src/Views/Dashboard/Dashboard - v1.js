@@ -47,9 +47,8 @@ const Dashboard = () => {
         }
         else {
           alert("The Lucky Draw has ended")
-          setWinner(codeDoc.winner[0].name)
-          // dispatch(addCode({ code: null, codeMatched: false }))
-          // navigate("/")
+          dispatch(addCode({ code: null, codeMatched: false }))
+          navigate("/")
         }
       }
       else {
@@ -112,7 +111,7 @@ const Dashboard = () => {
           }, 5000); // 5000 milliseconds (5 seconds)
         } 
         else {
-          alert('Please wait for lucky draw to start');
+          alert('The Lucky Draw has ended');
           setIsScrolling(false);
           setWinner('');
           setIsExploding(false);
@@ -165,7 +164,7 @@ return (
             <div className="scrolling-names-container">
               {winner ? (
                 <div className="winner-container">
-                  <div className="winner">Winner: {winner}</div>
+                  <div className="winner">{winner}</div>
                 </div>
               ) : (
                 <div

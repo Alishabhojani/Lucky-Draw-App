@@ -56,6 +56,7 @@ return (
       <div className="content-section">
         <div className="content-content">
           <h1>Join Lucky Draw</h1>
+          
           <div >
             <p className="codebtn">Code</p>
             <input
