@@ -13,7 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateTotalLuckyDraw } from '../../Store/Slices/LuckyDrawSlice';
 
 import { auth, db, storage } from "../../config/firebase"
-import { addDoc, doc, collection, setDoc, getDocs, getDoc, query, where, Timestamp, updateDoc } from 'firebase/firestore'
+import { addDoc, onSnapshot, doc, collection, setDoc, getDocs, getDoc, query, where, Timestamp, updateDoc, deleteDoc } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import { useEffect, useState } from 'react';
@@ -28,6 +28,9 @@ import { BsTelegram } from 'react-icons/bs';
 
 import { AiFillTrophy } from 'react-icons/ai';
 import { FaTimes } from 'react-icons/fa';
+
+
+import Loader from '../../Components/Loader/Loader';
 
 
 Modal.setAppElement('#root'); // Set the app root element for accessibility
@@ -59,37 +62,97 @@ function AdminDashboard() {
 
   // TOTAL LUCKY DRAWS
 
-  const reduxLuckyDraws = useSelector(state => state.LuckyDrawReducer.totalLuckyDraws)
-  console.log("reduxLuckyDraws>>>", reduxLuckyDraws)
+  // const reduxLuckyDraws = useSelector(state => state.LuckyDrawReducer.totalLuckyDraws)
+  // console.log("reduxLuckyDraws>>>", reduxLuckyDraws)
 
-  // const [totalLuckyDraws, setTotalLuckyDraws] = useState([])
+  const [totalLuckyDraws, setTotalLuckyDraws] = useState([])
+  console.log("totalLuckyDraws>>>", totalLuckyDraws)
 
 
-  const refreshLuckyDraws = async () => {
-    console.log('refreshLuckyDraws useeffect')
-    try {
-      const querySnapshot = await getDocs(collection(db, 'luckyDraws'));
-      const luckyDraws = [];
+  // const refreshLuckyDraws = async () => {
+  //   console.log('refreshLuckyDraws useeffect')
+  //   try {
+  //     const querySnapshot = await getDocs(collection(db, 'luckyDraws'));
+  //     const luckyDraws = [];
 
-      querySnapshot.forEach((doc) => {
-        // const { expiresOn } = doc.data()
-        // const expiresOnDate = expiresOn.toDate();
-        let newLuckyDraw = doc.data()
-        // newLuckyDraw.expiresOn = expiresOnDate
-        // console.log(newLuckyDraw)
-        luckyDraws.push(newLuckyDraw);
-      });
+  //     querySnapshot.forEach((doc) => {
+  //       // const { expiresOn } = doc.data()
+  //       // const expiresOnDate = expiresOn.toDate();
+  //       let newLuckyDraw = doc.data()
+  //       newLuckyDraw.docId = doc.id
+  //       // newLuckyDraw.expiresOn = expiresOnDate
+  //       // console.log(newLuckyDraw)
+  //       luckyDraws.push(newLuckyDraw);
+  //     });
 
-      dispatch(updateTotalLuckyDraw(luckyDraws))
+  //     dispatch(updateTotalLuckyDraw(luckyDraws))
 
-    } catch (error) {
-      console.error("Error fetching Total LuckyDraws:", error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Error fetching Total LuckyDraws:", error);
+  //   }
+  // };
 
   useEffect(() => {
-    refreshLuckyDraws()
-  }, [])
+
+    console.log('refreshLuckyDraws useeffect')
+
+    const collectionRef = collection(db, "luckyDraws");
+
+    let luckyDraws = [];
+
+    const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        console.log("change>>>", change)
+
+        const doc = change.doc;
+        doc.docId = doc.id
+
+        // Handle document changes (added, modified, deleted)
+        if (change.type === 'added') {
+          console.log('New document:', doc.data());
+          luckyDraws.push({...doc.data(), docId: doc.id })
+          setTotalLuckyDraws([...totalLuckyDraws, ...luckyDraws ])
+        } 
+        
+        else if (change.type === 'modified') {
+          console.log('Modified document:', doc.data());
+
+          const modifiedDoc = { docId: doc.id, ...doc.data() };
+          console.log("modifiedDoc>>>", modifiedDoc)
+
+
+          setTotalLuckyDraws((prevArray) => {
+            const newArray = prevArray.map((item) =>
+              item.docId === modifiedDoc.docId ? modifiedDoc : item
+            );
+
+            return newArray;
+          });
+
+          
+        } 
+        
+        else if (change.type === 'removed') {
+          console.log('Removed document:', doc.data());
+
+          setTotalLuckyDraws((prevArray) =>
+            prevArray.filter((item) => item.docId !== doc.id)
+          );
+
+        }
+
+      });
+    });
+
+    // Cleanup function to unsubscribe from the snapshot listener when the component unmounts
+    return () => unsubscribe();
+
+  }, []);
+
+
+  // useEffect(() => {
+  //   refreshLuckyDraws()
+  // }, [])
 
 
   // Modal Work
@@ -130,6 +193,8 @@ function AdminDashboard() {
       return
     }
 
+    setIsLoading(true)
+
     const querySnapshot = await getDocs(
       query(collection(db, 'luckyDraws'), where('name', '==', newLuckyDrawName.toLowerCase()))
     );
@@ -137,6 +202,7 @@ function AdminDashboard() {
     if (!querySnapshot.empty) {
       // Email already exists, show an error message or handle it as needed
       alert('Lucky Draw already exists');
+      setIsLoading(false)
       return;
     }
 
@@ -208,7 +274,9 @@ function AdminDashboard() {
     setDisplayNumber(code)
     // setDisplayDate(formattedDateTime)
 
-    refreshLuckyDraws()
+    // refreshLuckyDraws()
+
+    setIsLoading(false)
 
     // alert("lucky draw created")
 
@@ -253,6 +321,8 @@ function AdminDashboard() {
   const startLuckyDraw = async (code) => {
     try {
 
+      setIsLoading(true)
+
       let documentTitle
       let codeDoc
 
@@ -276,6 +346,7 @@ function AdminDashboard() {
       console.log(winnerObj)
 
       await updateDoc(docRef, { isStarted: true, winner: [winnerObj], isActive: false });
+      setIsLoading(false)
       alert("lucky draw started")
 
     }
@@ -288,22 +359,48 @@ function AdminDashboard() {
 
   // LEADERBOARD MODAL
   const [LeaderboardModalIsOpen, setLeaderboardModalIsOpen] = useState(false);
-  
-  const [leaderboardUsers, setLeaderboardUsers] = useState([]) 
+
+  const [leaderboardUsers, setLeaderboardUsers] = useState([])
   console.log("leaderboardUsers>>>", leaderboardUsers)
 
   const openLeaderboardModal = (users) => {
     setLeaderboardModalIsOpen(true);
     setLeaderboardUsers([...users])
-    
+
   };
 
   const closeLeaderboardModal = () => {
     setLeaderboardModalIsOpen(false);
   };
 
+  const [isLoading, setIsLoading] = useState(false);
 
-  return (
+
+  // DELETE DOCUMENT
+  const deleteDocument = async (documentId) => {
+    setIsLoading(true)
+    const docRef = doc(db, 'luckyDraws', documentId);
+
+    try {
+
+      await deleteDoc(docRef);
+      console.log('Document successfully deleted!');
+      setIsLoading(false)
+    } catch (error) {
+      console.error('Error deleting document:', error);
+    }
+  };
+
+
+  return (<>
+    <div>
+      {isLoading && <Loader />} {/* Show the loader if isLoading is true */}
+      {/* Your component's content */}
+
+    </div>
+
+
+
     <div className='main-div'>
       <div className='div2'>
         <img src={img1} className='avatar' alt='Avatar 1' />
@@ -440,23 +537,23 @@ function AdminDashboard() {
         </Modal>
 
         <Modal
-        isOpen={LeaderboardModalIsOpen}
-        onRequestClose={closeLeaderboardModal}
-        className="aliumodal"
-        overlayClassName="ppoverlay"
-        contentLabel="Modal"
-      >
-        <div className="leader_modal-content">
-          <div className="leader_modal-header">
-            <h3 className="mainheadali">Participants</h3>
-            <button className="close-button" onClick={closeLeaderboardModal}>
-              <FaTimes />
-            </button>
-          </div>
+          isOpen={LeaderboardModalIsOpen}
+          onRequestClose={closeLeaderboardModal}
+          className="aliumodal"
+          overlayClassName="ppoverlay"
+          contentLabel="Modal"
+        >
+          <div className="leader_modal-content">
+            <div className="leader_modal-header">
+              <h3 className="mainheadali">Participants</h3>
+              <button className="close-button" onClick={closeLeaderboardModal}>
+                <FaTimes />
+              </button>
+            </div>
 
-          <div className="modal-body">
-            <ol style={{ listStyleType: 'none' }}>
-              {/* {winners.map((name, index) => (
+            <div className="modal-body">
+              <ol style={{ listStyleType: 'none' }}>
+                {/* {winners.map((name, index) => (
                 <li key={index}>
                   <div className="mainbuserbox winnered">
                     <div>
@@ -473,25 +570,25 @@ function AdminDashboard() {
                   </div>
                 </li>
               ))} */}
-              {leaderboardUsers.map((name, index) => (
-                <li key={index}>
-                  <div className="mainbuserbox">
-                    <span className="numcss">{index + 1}</span>
-                    <div className="partbox">
-                      <p className="maipadd">
-                        <span className="pname">{name.name}</span>
-                        <br />
-                        <span className="rolep">Participant</span>
-                      </p>
+                {leaderboardUsers.map((name, index) => (
+                  <li key={index}>
+                    <div className="mainbuserbox">
+                      <span className="numcss">{index + 1}</span>
+                      <div className="partbox">
+                        <p className="maipadd">
+                          <span className="pname">{name.name}</span>
+                          <br />
+                          <span className="rolep">Participant</span>
+                        </p>
+                      </div>
+                      <AiFillTrophy className="parttrophy" />
                     </div>
-                    <AiFillTrophy className="parttrophy" />
-                  </div>
-                </li>
-              ))}
-            </ol>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
 
         <table className='data-table' cellSpacing={0}>
           <thead>
@@ -505,7 +602,7 @@ function AdminDashboard() {
             </tr>
           </thead>
           <tbody>
-            {reduxLuckyDraws.map((value, index) => (
+            {totalLuckyDraws.map((value, index) => (
               <tr className='elements' key={index}>
                 <td>{index + 1}</td>
                 <td className='empty-4'>{value.name}</td>
@@ -527,9 +624,8 @@ function AdminDashboard() {
 
                 <td className='leadparent'>
                   <p className='leadbord' onClick={() => openLeaderboardModal(value.users)}>Participants</p>
-                  <AiOutlineDelete className='delete' />
-                  <AiFillEdit className='delete' />
-                </td>
+                  <AiOutlineDelete className='delete' onClick={() => deleteDocument(value.docId)} />
+                 </td>
 
               </tr>
             ))}
@@ -537,6 +633,7 @@ function AdminDashboard() {
         </table>
       </div>
     </div>
+  </>
   );
 }
 

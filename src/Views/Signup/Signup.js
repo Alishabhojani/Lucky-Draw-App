@@ -12,6 +12,10 @@ import { collection, getDocs, where, query, doc, getDoc, updateDoc } from 'fireb
 
 // import bgImage from '../../Images/bg1.jpg'
 
+
+import Loader from '../../Components/Loader/Loader';
+
+
 function Signup() {
   const params = useParams()
   const dispatch = useDispatch()
@@ -24,6 +28,9 @@ function Signup() {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -75,6 +82,8 @@ function Signup() {
     // You can add your logic here to handle the form submission
     console.log(`Name: ${name}, Email: ${email}`);
 
+    setIsLoading(true);
+
     try {
 
 
@@ -88,6 +97,7 @@ function Signup() {
 
       if (checkEmail) {
         alert("email already exists")
+        setIsLoading(true);
       }
       else {
         let newUser = {
@@ -104,6 +114,7 @@ function Signup() {
         setEmail("")
 
         dispatch(updateUser(newUser))
+        setIsLoading(false);
 
         navigate(`/dashboard/${ldDoc.code}`)
 
@@ -125,8 +136,14 @@ function Signup() {
 
   return (
     <>
+      <div>
+        {isLoading && <Loader />} {/* Show the loader if isLoading is true */}
+        {/* Your component's content */}
+       
+      </div>
+
       <div className="container-1">
-        <div className="image-section-1" style={{backgroundImage: `url(${ldDoc.imgUrl})`}}></div>
+        <div className="image-section-1" style={{ backgroundImage: `url(${ldDoc.imgUrl})` }}></div>
         <div className="content-section-1">
           <div className="content-content-2">
             <h1 className='personal'>Personal Information</h1>

@@ -31,13 +31,14 @@ function Code() {
           navigate(`/signup/${code}`)
         }
         else {
-          alert("The code you entered is inactive")
+          navigate(`/dashboard/${code}`)
         }
       } 
       else {
         alert("Please write the correct code")
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.error("Error retrieving document:", error);
     }
 

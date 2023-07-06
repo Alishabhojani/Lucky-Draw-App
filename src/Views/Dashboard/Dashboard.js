@@ -16,6 +16,7 @@ import soundEffect from '../../Audios/Piano.mp3';
 
 
 const Dashboard = () => {
+  
 
   const params = useParams()
   // console.log(params)
@@ -108,7 +109,6 @@ const Dashboard = () => {
               // Select the winner
               const randomIndex = Math.floor(Math.random() * participantsData.length);
               setWinner(luckyDrawData.winner[0].name);
-              handleStopSound()
 
               // Remove the winner's name from the array
               participantsData.splice(randomIndex, 1);
@@ -116,7 +116,13 @@ const Dashboard = () => {
               setIsScrolling(false);
               setIsExploding(true);
               setCogrt(true);
-            }, 5000); // 5000 milliseconds (5 seconds)
+            }, 4000); // 5000 milliseconds (5 seconds)
+
+            // setTimeout(() => {
+            //   handleStopSound()
+
+            // }, 5000); // 5000 milliseconds (5 seconds)
+            
           }
           else {
             // alert('Please wait for lucky draw to start');
@@ -167,10 +173,10 @@ const Dashboard = () => {
     audioRef.current.play();
   };
 
-  const handleStopSound = () => {
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
-  };
+  // const handleStopSound = () => {
+  //   audioRef.current.pause();
+  //   audioRef.current.currentTime = 0;
+  // };
 
 
 
@@ -188,7 +194,7 @@ const Dashboard = () => {
 
         <div>
 
-          <audio ref={audioRef}  autoPlay>
+          <audio ref={audioRef} >
             <source src={soundEffect} type="audio/mp3" />
           </audio>
 
