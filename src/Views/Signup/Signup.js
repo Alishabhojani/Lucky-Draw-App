@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import { db } from '../../config/firebase';
 import { collection, getDocs, where, query, doc, getDoc, updateDoc } from 'firebase/firestore'
 
+// import bgImage from '../../Images/bg1.jpg'
 
 function Signup() {
   const params = useParams()
@@ -125,7 +126,7 @@ function Signup() {
   return (
     <>
       <div className="container-1">
-        <div className="image-section-1"></div>
+        <div className="image-section-1" style={{backgroundImage: `url(${ldDoc.imgUrl})`}}></div>
         <div className="content-section-1">
           <div className="content-content-2">
             <h1 className='personal'>Personal Information</h1>

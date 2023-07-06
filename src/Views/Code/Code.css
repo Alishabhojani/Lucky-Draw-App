@@ -37,7 +37,7 @@
 .content-content {
   width: 50%;
   margin: auto auto;
-  height: 40%;
+  height: 50%;
   overflow: hidden;
 }
 
@@ -74,16 +74,16 @@ h1 {
 }
 
 .code-input {
-  width: 100%;
+  width: 90%;
   margin: 1rem 0 0;
   height: 50px;
   text-align: left;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 18px;
   font-weight: bold;
   letter-spacing: 0px;
   border: 0.7px solid rgba(167, 170, 172, 0.5);
-  padding-left: 5px;
+  padding: 5px 10px;
   border-radius: 8px;
   color: #a7aaac;
 }
@@ -129,7 +129,7 @@ h1 {
   .content-content {
     width: 60%;
     margin: auto auto;
-    height: 40%;
+    height: 60%;
     overflow: hidden;
   }
 }

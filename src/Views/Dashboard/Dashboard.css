@@ -7,10 +7,8 @@
 .section1 {
   width: 50%;
   height: 100vh;
-  background-image: url("../../Images/bg1.jpg");
   background-size: cover;
   background-position: center;
-  border: 1px solid black;
 }
 
 .section2 {
@@ -56,6 +54,8 @@
 
 .h2 {
   color: white;
+  width: 80%;
+  text-align: center
 }
 
 .border {

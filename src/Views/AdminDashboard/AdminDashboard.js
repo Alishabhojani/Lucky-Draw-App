@@ -12,8 +12,10 @@ import { AiFillEdit, AiOutlinePlus } from "react-icons/ai";
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTotalLuckyDraw } from '../../Store/Slices/LuckyDrawSlice';
 
-import { auth, db } from "../../config/firebase"
+import { auth, db, storage } from "../../config/firebase"
 import { addDoc, doc, collection, setDoc, getDocs, getDoc, query, where, Timestamp, updateDoc } from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 import { useEffect, useState } from 'react';
 
 import Modal from 'react-modal';
@@ -23,6 +25,9 @@ import { BsFacebook } from 'react-icons/bs';
 import { IoLogoWhatsapp } from 'react-icons/io';
 import { AiFillTwitterCircle, AiFillInstagram } from 'react-icons/ai';
 import { BsTelegram } from 'react-icons/bs';
+
+import { AiFillTrophy } from 'react-icons/ai';
+import { FaTimes } from 'react-icons/fa';
 
 
 Modal.setAppElement('#root'); // Set the app root element for accessibility
@@ -53,8 +58,6 @@ function AdminDashboard() {
 
 
   // TOTAL LUCKY DRAWS
-
-
 
   const reduxLuckyDraws = useSelector(state => state.LuckyDrawReducer.totalLuckyDraws)
   console.log("reduxLuckyDraws>>>", reduxLuckyDraws)
@@ -111,7 +114,7 @@ function AdminDashboard() {
   };
 
   const handleImageUpload = (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files;
     setNewLuckyDrawImage(file);
   };
 
@@ -121,7 +124,11 @@ function AdminDashboard() {
 
   const createNewLuckyDraw = async (e) => {
     e.preventDefault()
-    console.log("handleCreate working")
+    console.log("handleCreate working", newLuckyDrawImage)
+    if (!newLuckyDrawImage) {
+      alert("Please add an image")
+      return
+    }
 
     const querySnapshot = await getDocs(
       query(collection(db, 'luckyDraws'), where('name', '==', newLuckyDrawName.toLowerCase()))
@@ -166,6 +173,12 @@ function AdminDashboard() {
       isCodeUnique = codeSnapshot.empty;
     }
 
+    //ADDING THE IMAGE
+    const imgRef = ref(storage, `Images/${newLuckyDrawName}`)
+    const imgUpload = await uploadBytes(imgRef, newLuckyDrawImage[0])
+    const imgUrl = await getDownloadURL(imgUpload.ref)
+    console.log("imgUrl>>>", imgUrl)
+
     // Create a new lucky draw object
     const newLuckyDraw = {
       id: totalDocuments + 1,
@@ -178,6 +191,7 @@ function AdminDashboard() {
       totalWinners: 0,
       // expiresOn: Timestamp.fromDate(dateTime),
       isStarted: false,
+      imgUrl: imgUrl,
     };
 
     // Add the new lucky draw to the "luckyDraws" collection
@@ -205,8 +219,6 @@ function AdminDashboard() {
 
 
   // SHARE MODAL
-
-
 
   const [shareModalIsOpen, setShareModalIsOpen] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
@@ -274,6 +286,22 @@ function AdminDashboard() {
   }
 
 
+  // LEADERBOARD MODAL
+  const [LeaderboardModalIsOpen, setLeaderboardModalIsOpen] = useState(false);
+  
+  const [leaderboardUsers, setLeaderboardUsers] = useState([]) 
+  console.log("leaderboardUsers>>>", leaderboardUsers)
+
+  const openLeaderboardModal = (users) => {
+    setLeaderboardModalIsOpen(true);
+    setLeaderboardUsers([...users])
+    
+  };
+
+  const closeLeaderboardModal = () => {
+    setLeaderboardModalIsOpen(false);
+  };
+
 
   return (
     <div className='main-div'>
@@ -315,25 +343,27 @@ function AdminDashboard() {
               <div className='ali_imagelogo'>  <img src={pic} alt="" className="ali_image-icon" /></div>
               Add image
             </label>
-            <input
-              type="file"
-              id="imageInput"
-              accept="image/*"
-              onChange={handleImageUpload}
-              style={{ display: 'none' }}
-            />
+            <form onSubmit={createNewLuckyDraw} >
+              <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: 'none' }}
+              // required
+              />
 
-            <input
-              className='ali_nameinput'
-              type="text"
-              id="name"
-              value={newLuckyDrawName}
-              onChange={(e) => setNewLuckyDrawName(e.target.value)}
-              placeholder=" Name"
-              required
-            />
+              <input
+                className='ali_nameinput'
+                type="text"
+                id="name"
+                value={newLuckyDrawName}
+                onChange={(e) => setNewLuckyDrawName(e.target.value)}
+                placeholder=" Name"
+                required
+              />
 
-            <input
+              {/* <input
               className='ali_nameinput'
               placeholder="Expires on (Date)"
               value={newLuckyDrawDate}
@@ -349,9 +379,10 @@ function AdminDashboard() {
               onChange={(e) => setNewLuckyDrawTime(e.target.value)}
               type="time"
               required
-            />
+            /> */}
 
-            <button onClick={createNewLuckyDraw} className='ali_createbutton'>Create</button>
+              <button className='ali_createbutton'>Create</button>
+            </form>
           </div>
         </Modal>
 
@@ -359,7 +390,7 @@ function AdminDashboard() {
           isOpen={shareModalIsOpen}
           onRequestClose={closeShareModal}
           className="modal"
-          overlayClassName="overlay"
+          overlayClassName="ppoverlay"
           closeTimeoutMS={200}
         >
           <div className="modal-header">
@@ -381,7 +412,10 @@ function AdminDashboard() {
                 <a href="#" >
                   <BsFacebook />
                 </a>
-                <a href={`https://wa.me/?text=myLink.com/signup/${displayNumber}`} target="_blank" rel="noopener noreferrer">
+                {/* <a href={`https://wa.me/?text=http://luckydraw-env-1.eba-hecxshwq.us-west-2.elasticbeanstalk.com/#/signup/${displayNumber}`} target="_blank" rel="noopener noreferrer">
+                  <IoLogoWhatsapp />
+                </a> */}
+                <a href={`https://wa.me/?text=${encodeURIComponent(`Click the link to join ${displayName} LuckyDraw.\r\n\r\nhttp://luckydraw-env-1.eba-hecxshwq.us-west-2.elasticbeanstalk.com/#/signup/${displayNumber}`)}`} target="_blank" rel="noopener noreferrer">
                   <IoLogoWhatsapp />
                 </a>
                 <a href="#">
@@ -398,12 +432,66 @@ function AdminDashboard() {
               <p>Or copy link</p>
               <div className="field">
 
-                <input id="link-input" type="text" readOnly value={`myLink.com/signup/${displayNumber}`} />
-                <button onClick={handleSecondCopy} className='i-button'>{codeCopied ? 'Copied' : 'Copy'}</button>
+                <input id="link-input" type="text" readOnly value={`http://luckydraw-env-1.eba-hecxshwq.us-west-2.elasticbeanstalk.com/#/signup/${displayNumber}`} />
+                <button onClick={handleSecondCopy} className='i-button2  '>{codeCopied ? 'Copied' : 'Copy'}</button>
               </div>
             </div>
           </div>
         </Modal>
+
+        <Modal
+        isOpen={LeaderboardModalIsOpen}
+        onRequestClose={closeLeaderboardModal}
+        className="aliumodal"
+        overlayClassName="ppoverlay"
+        contentLabel="Modal"
+      >
+        <div className="leader_modal-content">
+          <div className="leader_modal-header">
+            <h3 className="mainheadali">Participants</h3>
+            <button className="close-button" onClick={closeLeaderboardModal}>
+              <FaTimes />
+            </button>
+          </div>
+
+          <div className="modal-body">
+            <ol style={{ listStyleType: 'none' }}>
+              {/* {winners.map((name, index) => (
+                <li key={index}>
+                  <div className="mainbuserbox winnered">
+                    <div>
+                      <span className="numcss whitenm">{index + 1}</span>
+                    </div>
+                    <div className="partbox">
+                      <p className="maipadd">
+                        <span className="aaname">{name}</span>
+                        <br />
+                        <span className="rolew">Winner</span>
+                      </p>
+                    </div>
+                    <AiFillTrophy className="wtrophy" />
+                  </div>
+                </li>
+              ))} */}
+              {leaderboardUsers.map((name, index) => (
+                <li key={index}>
+                  <div className="mainbuserbox">
+                    <span className="numcss">{index + 1}</span>
+                    <div className="partbox">
+                      <p className="maipadd">
+                        <span className="pname">{name.name}</span>
+                        <br />
+                        <span className="rolep">Participant</span>
+                      </p>
+                    </div>
+                    <AiFillTrophy className="parttrophy" />
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </Modal>
 
         <table className='data-table' cellSpacing={0}>
           <thead>
@@ -428,16 +516,17 @@ function AdminDashboard() {
                     {value.isActive ? 'Start now' : 'Inactive'}
                   </button> */}
                   <button className={value.isActive ? 'status-active' : 'status-inactive'} onClick={() => {
-                    value.isActive 
-                    ? startLuckyDraw(value.code)
-                    : alert("Lucky Draw already Drawn")
+                    value.isActive
+                      ? startLuckyDraw(value.code)
+                      : alert("Lucky Draw already Drawn")
                   }
                   }>
                     {value.isActive ? 'Start Now' : 'Completed'}
                   </button>
                 </td>
 
-                <td className='leadparent'><p className='leadbord'>Uzair</p>
+                <td className='leadparent'>
+                  <p className='leadbord' onClick={() => openLeaderboardModal(value.users)}>Participants</p>
                   <AiOutlineDelete className='delete' />
                   <AiFillEdit className='delete' />
                 </td>
