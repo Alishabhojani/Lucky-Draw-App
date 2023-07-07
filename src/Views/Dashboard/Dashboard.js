@@ -184,7 +184,7 @@ const Dashboard = () => {
     // style={{backgroundImage: `url(${ldDoc.imgUrl})`}}
 
     <div className="container-10">
-      <div className="section1" style={{ backgroundImage: `url(${ldDoc.imgUrl})` }} ></div>
+      <div className="section1-image" style={{ backgroundImage: `url(${ldDoc.imgUrl})` }} ></div>
 
       <div className="section2">
         {congrt ? (<div className="pic1">

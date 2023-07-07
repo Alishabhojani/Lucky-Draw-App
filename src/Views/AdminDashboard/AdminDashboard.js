@@ -1,36 +1,41 @@
-import React from 'react';
-
-import './AdminDashboard.css'
-
+import React, { useEffect, useState } from 'react';
+import './AdminDashboard.css';
 import img1 from '../../Images/avatar1.png';
 import img2 from '../../Images/profile.svg';
 import img3 from '../../Images/gift.svg';
 import img4 from '../../Images/logout.svg';
-import { AiOutlineDelete } from "react-icons/ai";
-import { AiFillEdit, AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineDelete } from 'react-icons/ai';
+import { AiFillEdit } from 'react-icons/ai';
+import { TiPlusOutline } from 'react-icons/ti';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTotalLuckyDraw } from '../../Store/Slices/LuckyDrawSlice';
-
-import { auth, db, storage } from "../../config/firebase"
-import { addDoc, onSnapshot, doc, collection, setDoc, getDocs, getDoc, query, where, Timestamp, updateDoc, deleteDoc } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
-import { useEffect, useState } from 'react';
-
+import { auth, db, storage } from '../../config/firebase';
+import {
+  addDoc,
+  onSnapshot,
+  doc,
+  collection,
+  setDoc,
+  getDocs,
+  getDoc,
+  query,
+  where,
+  Timestamp,
+  updateDoc,
+  deleteDoc,
+} from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Modal from 'react-modal';
 import pic from '../../Images/picture.svg';
-
 import { BsFacebook } from 'react-icons/bs';
 import { IoLogoWhatsapp } from 'react-icons/io';
 import { AiFillTwitterCircle, AiFillInstagram } from 'react-icons/ai';
 import { BsTelegram } from 'react-icons/bs';
-
 import { AiFillTrophy } from 'react-icons/ai';
 import { FaTimes } from 'react-icons/fa';
-
-
 import Loader from '../../Components/Loader/Loader';
+import { logoutAdmin } from '../../Store/Slices/AdminSlice';
 
 
 Modal.setAppElement('#root'); // Set the app root element for accessibility
@@ -184,20 +189,18 @@ function AdminDashboard() {
   const handleImageUpload = (event) => {
     const file = event.target.files;
     setNewLuckyDrawImage(file);
+    console.log("IMAGE SELECTED", file[0].name);
   };
-
   const handleChooseFile = () => {
     document.getElementById('imageInput').click();
   };
-
   const createNewLuckyDraw = async (e) => {
-    e.preventDefault()
-    console.log("handleCreate working", newLuckyDrawImage)
+    e.preventDefault();
+    console.log('handleCreate working', newLuckyDrawImage);
     if (!newLuckyDrawImage) {
-      alert("Please add an image")
-      return
+      alert('Please add an image');
+      return;
     }
-
     setIsLoading(true)
 
     const querySnapshot = await getDocs(
@@ -414,23 +417,38 @@ function AdminDashboard() {
 
 
     <div className='main-div'>
-      <div className='div2'>
-        <img src={img1} className='avatar' alt='Avatar 1' />
-        <img src={img2} className='avatar2' alt='Avatar 2' />
-        <img src={img3} className='avatar3' alt='Avatar 3' />
-        <img src={img4} className='avatar4' alt='Avatar 4' />
+      <div className='child'>
+        <div className='div2'>
+          <div className='imga1'>
+            <img src={img1} className='avatar' alt='Avatar 1' />
+          </div>
+          <div className='imga2-3'>
+            <img src={img2} className='avatar2' alt='Avatar 2' />
+            <img src={img3} className='avatar3' alt='Avatar 3' />
+          </div>
+          <div className='imga4' onClick={() => dispatch(logoutAdmin())}>
+            <img src={img4} className='avatar4' alt='Avatar 4' />
+          </div>
+        </div>
       </div>
       <div className='div3'>
         <h3 className='h3'>Lucky Draw</h3>
         <div className='button-wrapper'>
           <SearchBar />
-          <button
-            onClick={openModal}
-            className='create-button'>
-            <AiOutlinePlus className='plus-icon' color='white' />
-            Create Lucky Draw
-          </button>
+          <div className='create-button' onClick={openModal}>
+            <div>
+
+            <TiPlusOutline size={18} className='plus' />
+            </div>
+            <div>
+              
+            <button className='btn11'>
+              Create Lucky Draw
+            </button>
+            </div>
+          </div>
         </div>
+
 
 
         <Modal
@@ -448,9 +466,11 @@ function AdminDashboard() {
           </div>
 
           <div className="ali_modal-content" >
-            <label htmlFor="image" className='ali_text' onClick={handleChooseFile}>
-              <div className='ali_imagelogo'>  <img src={pic} alt="" className="ali_image-icon" /></div>
-              Add image
+            <label htmlFor="image" className="ali_text" onClick={handleChooseFile}>
+              <div className="ali_imagelogo">
+                <img src={pic} alt="" className="ali_image-icon" />
+              </div>
+              {newLuckyDrawImage ? `Image: ${newLuckyDrawImage[0].name}` : 'Add image'}
             </label>
             <form onSubmit={createNewLuckyDraw} >
               <input
@@ -609,7 +629,7 @@ function AdminDashboard() {
               <th className='thh empty-4'>Name</th>
               <th className='thh empty-3'>Code</th>
               <th className='thh empty-2'>Participants</th>
-              <th className='thh empty'>Started?</th>
+              <th className='thh empty'>Status</th>
               <th className='thh'>Actions</th>
             </tr>
           </thead>

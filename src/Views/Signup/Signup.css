@@ -7,8 +7,8 @@
 .image-section-1 {
   width: 50%;
   height: 100vh;
-  
-  background-size: cover;
+  background-position: center;
+  background-size: contain;
   background-repeat: no-repeat;
 }
 
@@ -87,6 +87,8 @@
   .image-section-1 {
     background-size: cover;
     background-repeat: no-repeat;
+    background-size: contain;
+
   }
 
   .content-section-1 {
@@ -103,8 +105,6 @@
   }
 
   .image-section-1 {
-    background-size: cover;
-    background-repeat: no-repeat;
     height: 40vh;
     width: 100%;
   }

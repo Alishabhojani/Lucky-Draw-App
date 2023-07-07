@@ -4,11 +4,13 @@
   width: 100%;
 }
 
-.section1 {
+.section1-image {
   width: 50%;
   height: 100vh;
   background-size: cover;
   background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .section2 {
@@ -210,9 +212,12 @@
 
   .section1 {
     height: 40vh;
-    background-size: cover;
-    background-position: center;
+     width: 100%;
+  }
+
+  .section1-image {
     width: 100%;
+    height: 50vh;
   }
 
   .outer-div {
