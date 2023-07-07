@@ -377,9 +377,18 @@ function AdminDashboard() {
   const [leaderboardUsers, setLeaderboardUsers] = useState([])
   console.log("leaderboardUsers>>>", leaderboardUsers)
 
-  const openLeaderboardModal = (users) => {
-    setLeaderboardModalIsOpen(true);
-    setLeaderboardUsers([...users])
+  const openLeaderboardModal = (users,winner) => {
+    if (winner) {
+      const sortedUsers = users
+        .map((user) => ({
+          ...user,
+          isWinner: winner.some((winnerData) => winnerData.email === user.email),
+        }))
+        .sort((a, b) => (b.isWinner ? 1 : 0) - (a.isWinner ? 1 : 0));
+        setLeaderboardModalIsOpen(true);
+        setLeaderboardUsers([...sortedUsers])
+    }
+    
 
   };
 
@@ -405,6 +414,32 @@ function AdminDashboard() {
       console.error('Error deleting document:', error);
     }
   };
+  const [winnerName, setWinnerName] = useState('');
+  useEffect(() => {
+    const fetchWinnerName = async () => {
+      const collectionRef = collection(db, 'winners');
+
+      // Apply filtering to query the winner document
+      const q = query(collectionRef, where('index', '==', 'winner'));
+
+      try {
+        const snapshot = await getDocs(q);
+        console.log('@@@@',snapshot)
+        // Retrieve the winner's name
+        if (!snapshot.empty) {
+          const winnerDoc = snapshot.docs[0];
+          const winnerData = winnerDoc.data();
+          console.log('!!!!!!!!!!!!',winnerData)
+          const name = winnerData.name;
+
+          setWinnerName(name);
+        }
+      } catch (error) {
+        console.error('Error fetching winner name:', error);
+      }
+    };
+    fetchWinnerName();
+  }, []);
 
 
   return (<>
@@ -582,7 +617,7 @@ function AdminDashboard() {
                 <FaTimes />
               </button>
             </div>
-
+<div>{winnerName}</div>
             <div className="modal-body">
               <ol style={{ listStyleType: 'none' }}>
                 {/* {winners.map((name, index) => (
@@ -602,18 +637,22 @@ function AdminDashboard() {
                   </div>
                 </li>
               ))} */}
-                {leaderboardUsers.map((name, index) => (
+              
+                {leaderboardUsers.map((value, index) => (
+                  
                   <li key={index}>
-                    <div className="mainbuserbox">
-                      <span className="numcss">{index + 1}</span>
+    
+                    <div style={{backgroundColor : value.isWinner ? 'red' : null}} className="mainbuserbox">
+                      <span style={{color : value.isWinner ? 'white' : 'black'}} className="numcss">{index + 1}</span>
                       <div className="partbox">
-                        <p className="maipadd">
-                          <span className="pname">{name.name}</span>
+                        
+                        <p style={{color : value.isWinner ? 'white' : 'black'}} className="maipadd">
+                          <span className="pname">{value.name}</span>
                           <br />
                           <span className="rolep">Participant</span>
                         </p>
                       </div>
-                      <AiFillTrophy className="parttrophy" />
+                      <AiFillTrophy color={value.isWinner ? 'yellow' : null} className="parttrophy" />
                     </div>
                   </li>
                 ))}
@@ -655,7 +694,7 @@ function AdminDashboard() {
                 </td>
 
                 <td className='leadparent'>
-                  <p className='leadbord' onClick={() => openLeaderboardModal(value.users)}>Participants</p>
+                  <p className='leadbord' onClick={() => openLeaderboardModal(value.users,value.winner)}>Participants</p>
                   <AiOutlineDelete className='delete' onClick={() => deleteDocument(value.docId)} />
                 </td>
 
