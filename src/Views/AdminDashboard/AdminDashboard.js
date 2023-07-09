@@ -7,6 +7,7 @@ import img4 from '../../Images/logout.svg';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { AiFillEdit } from 'react-icons/ai';
 import { TiPlusOutline } from 'react-icons/ti';
+import { CiShare1 } from 'react-icons/ci';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTotalLuckyDraw } from '../../Store/Slices/LuckyDrawSlice';
@@ -377,7 +378,7 @@ function AdminDashboard() {
   const [leaderboardUsers, setLeaderboardUsers] = useState([])
   console.log("leaderboardUsers>>>", leaderboardUsers)
 
-  const openLeaderboardModal = (users,winner) => {
+  const openLeaderboardModal = (users, winner) => {
     if (winner) {
       const sortedUsers = users
         .map((user) => ({
@@ -385,10 +386,10 @@ function AdminDashboard() {
           isWinner: winner.some((winnerData) => winnerData.email === user.email),
         }))
         .sort((a, b) => (b.isWinner ? 1 : 0) - (a.isWinner ? 1 : 0));
-        setLeaderboardModalIsOpen(true);
-        setLeaderboardUsers([...sortedUsers])
+      setLeaderboardModalIsOpen(true);
+      setLeaderboardUsers([...sortedUsers])
     }
-    
+
 
   };
 
@@ -424,12 +425,12 @@ function AdminDashboard() {
 
       try {
         const snapshot = await getDocs(q);
-        console.log('@@@@',snapshot)
+        console.log('@@@@', snapshot)
         // Retrieve the winner's name
         if (!snapshot.empty) {
           const winnerDoc = snapshot.docs[0];
           const winnerData = winnerDoc.data();
-          console.log('!!!!!!!!!!!!',winnerData)
+          console.log('!!!!!!!!!!!!', winnerData)
           const name = winnerData.name;
 
           setWinnerName(name);
@@ -473,13 +474,13 @@ function AdminDashboard() {
           <div className='create-button' onClick={openModal}>
             <div>
 
-            <TiPlusOutline size={18} className='plus' />
+              <TiPlusOutline size={18} className='plus' />
             </div>
             <div>
-              
-            <button className='btn11'>
-              Create Lucky Draw
-            </button>
+
+              <button className='btn11'>
+                Create Lucky Draw
+              </button>
             </div>
           </div>
         </div>
@@ -603,6 +604,8 @@ function AdminDashboard() {
           </div>
         </Modal>
 
+<div className='wwww1'>
+
         <Modal
           isOpen={LeaderboardModalIsOpen}
           onRequestClose={closeLeaderboardModal}
@@ -612,14 +615,14 @@ function AdminDashboard() {
         >
           <div className="leader_modal-content">
             <div className="leader_modal-header">
-              <h3 className="mainheadali">Participants</h3>
+              <h3 className="mainheadali">Leaderboard</h3>
               <button className="close-button" onClick={closeLeaderboardModal}>
                 <FaTimes />
               </button>
             </div>
-<div>{winnerName}</div>
+
             <div className="modal-body">
-              <ol style={{ listStyleType: 'none' }}>
+              <ol style={{ listStyleType: 'none' }} className='llli'>
                 {/* {winners.map((name, index) => (
                 <li key={index}>
                   <div className="mainbuserbox winnered">
@@ -637,19 +640,22 @@ function AdminDashboard() {
                   </div>
                 </li>
               ))} */}
-              
+
                 {leaderboardUsers.map((value, index) => (
-                  
-                  <li key={index}>
-    
-                    <div style={{backgroundColor : value.isWinner ? 'red' : null}} className="mainbuserbox">
-                      <span style={{color : value.isWinner ? 'white' : 'black'}} className="numcss">{index + 1}</span>
+
+                  <li className='ll2' key={index}>
+
+                    <div style={{ backgroundColor: value.isWinner ? 'red' : null }} className="mainbuserbox">
+                      <span style={{ color: value.isWinner ? 'white' : 'black' }} className="numcss">{index + 1}</span>
                       <div className="partbox">
-                        
-                        <p style={{color : value.isWinner ? 'white' : 'black'}} className="maipadd">
+
+                        <p style={{ color: value.isWinner ? 'white' : 'black' }} className="maipadd">
                           <span className="pname">{value.name}</span>
                           <br />
-                          <span className="rolep">Participant</span>
+                          {
+                            value.isWinner ? <span className="rolep" style={{color:"whitesmoke",border:"none" ,fontFamily:"Arial, sans-serif", fontSize:"small"}} >Winner</span> : <span className="rolep">Participant</span>
+                          }
+
                         </p>
                       </div>
                       <AiFillTrophy color={value.isWinner ? 'yellow' : null} className="parttrophy" />
@@ -660,6 +666,7 @@ function AdminDashboard() {
             </div>
           </div>
         </Modal>
+</div>
 
         <table className='data-table' cellSpacing={0}>
           <thead>
@@ -680,9 +687,7 @@ function AdminDashboard() {
                 <td className='empty-3'>{value.code}</td>
                 <td className='empty-2'>{value.totalUsers}</td>
                 <td className='empty'>
-                  {/* <button className={value.isActive ? 'status-active' : 'status-inactive'}>
-                    {value.isActive ? 'Start now' : 'Inactive'}
-                  </button> */}
+                 
                   <button className={value.isActive ? 'status-active' : 'status-inactive'} onClick={() => {
                     value.isActive
                       ? startLuckyDraw(value.code)
@@ -694,8 +699,8 @@ function AdminDashboard() {
                 </td>
 
                 <td className='leadparent'>
-                  <p className='leadbord' onClick={() => openLeaderboardModal(value.users,value.winner)}>Participants</p>
-                  <AiOutlineDelete className='delete' onClick={() => deleteDocument(value.docId)} />
+                  <p className='leadbord' onClick={() => openLeaderboardModal(value.users, value.winner)}> <span ><CiShare1  /></span>  <span>Participants</span></p>
+                  <AiOutlineDelete size={25} className='delete' onClick={() => deleteDocument(value.docId)} />
                 </td>
 
               </tr>
