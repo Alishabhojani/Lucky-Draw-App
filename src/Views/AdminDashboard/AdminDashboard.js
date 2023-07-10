@@ -415,32 +415,6 @@ function AdminDashboard() {
       console.error('Error deleting document:', error);
     }
   };
-  const [winnerName, setWinnerName] = useState('');
-  useEffect(() => {
-    const fetchWinnerName = async () => {
-      const collectionRef = collection(db, 'winners');
-
-      // Apply filtering to query the winner document
-      const q = query(collectionRef, where('index', '==', 'winner'));
-
-      try {
-        const snapshot = await getDocs(q);
-        console.log('@@@@', snapshot)
-        // Retrieve the winner's name
-        if (!snapshot.empty) {
-          const winnerDoc = snapshot.docs[0];
-          const winnerData = winnerDoc.data();
-          console.log('!!!!!!!!!!!!', winnerData)
-          const name = winnerData.name;
-
-          setWinnerName(name);
-        }
-      } catch (error) {
-        console.error('Error fetching winner name:', error);
-      }
-    };
-    fetchWinnerName();
-  }, []);
 
 
   return (<>
@@ -658,7 +632,7 @@ function AdminDashboard() {
 
                         </p>
                       </div>
-                      <AiFillTrophy color={value.isWinner ? 'yellow' : null} className="parttrophy" />
+                      <AiFillTrophy className="parttrophy" />
                     </div>
                   </li>
                 ))}
