@@ -47,22 +47,12 @@ Modal.setAppElement('#root'); // Set the app root element for accessibility
 
 
 
-function SearchBar() {
-  const handleSearch = (event) => {
-    event.preventDefault();
-    // Perform search logic here
-  };
 
-  return (
-    <form className='search-form' onSubmit={handleSearch}>
-      <input type='text' placeholder='Search...' />
-    </form>
-  );
-}
 
 function AdminDashboard() {
 
   const dispatch = useDispatch()
+  const [search, setSearch] = useState("")
 
 
 
@@ -183,6 +173,7 @@ function AdminDashboard() {
   const openModal = () => {
     setModalIsOpen(true);
   };
+
   const closeModal = () => {
     setModalIsOpen(false);
   };
@@ -192,9 +183,13 @@ function AdminDashboard() {
     setNewLuckyDrawImage(file);
     console.log("IMAGE SELECTED", file[0].name);
   };
+
   const handleChooseFile = () => {
     document.getElementById('imageInput').click();
   };
+
+
+
   const createNewLuckyDraw = async (e) => {
     e.preventDefault();
     console.log('handleCreate working', newLuckyDrawImage);
@@ -417,6 +412,9 @@ function AdminDashboard() {
   };
 
 
+  //
+
+
   return (<>
     <div>
       {isLoading && <Loader />} {/* Show the loader if isLoading is true */}
@@ -444,7 +442,16 @@ function AdminDashboard() {
       <div className='div3'>
         <h3 className='h3'>Lucky Draw</h3>
         <div className='button-wrapper'>
-          <SearchBar />
+
+          <div className='search-form'>
+            <input
+              placeholder="Lucky Draw Name..."
+              type='text'
+              value={search}
+              onChange={(e) => { setSearch(e.target.value) }}
+            />
+          </div>
+
           <div className='create-button' onClick={openModal}>
             <div>
 
@@ -578,26 +585,26 @@ function AdminDashboard() {
           </div>
         </Modal>
 
-<div className='wwww1'>
+        <div className='wwww1'>
 
-        <Modal
-          isOpen={LeaderboardModalIsOpen}
-          onRequestClose={closeLeaderboardModal}
-          className="aliumodal"
-          overlayClassName="ppoverlay"
-          contentLabel="Modal"
-        >
-          <div className="leader_modal-content">
-            <div className="leader_modal-header">
-              <h3 className="mainheadali">Leaderboard</h3>
-              <button className="close-button" onClick={closeLeaderboardModal}>
-                <FaTimes />
-              </button>
-            </div>
+          <Modal
+            isOpen={LeaderboardModalIsOpen}
+            onRequestClose={closeLeaderboardModal}
+            className="aliumodal"
+            overlayClassName="ppoverlay"
+            contentLabel="Modal"
+          >
+            <div className="leader_modal-content">
+              <div className="leader_modal-header">
+                <h3 className="mainheadali">Leaderboard</h3>
+                <button className="close-button" onClick={closeLeaderboardModal}>
+                  <FaTimes />
+                </button>
+              </div>
 
-            <div className="modal-body">
-              <ol style={{ listStyleType: 'none' }} className='llli'>
-                {/* {winners.map((name, index) => (
+              <div className="modal-body">
+                <ol style={{ listStyleType: 'none' }} className='llli'>
+                  {/* {winners.map((name, index) => (
                 <li key={index}>
                   <div className="mainbuserbox winnered">
                     <div>
@@ -615,32 +622,32 @@ function AdminDashboard() {
                 </li>
               ))} */}
 
-                {leaderboardUsers.map((value, index) => (
+                  {leaderboardUsers.map((value, index) => (
 
-                  <li className='ll2' key={index}>
+                    <li className='ll2' key={index}>
 
-                    <div style={{ backgroundColor: value.isWinner ? 'red' : null }} className="mainbuserbox">
-                      <span style={{ color: value.isWinner ? 'white' : 'black' }} className="numcss">{index + 1}</span>
-                      <div className="partbox">
+                      <div style={{ backgroundColor: value.isWinner ? 'red' : null }} className="mainbuserbox">
+                        <span style={{ color: value.isWinner ? 'white' : 'black' }} className="numcss">{index + 1}</span>
+                        <div className="partbox">
 
-                        <p style={{ color: value.isWinner ? 'white' : 'black' }} className="maipadd">
-                          <span className="pname">{value.name}</span>
-                          <br />
-                          {
-                            value.isWinner ? <span className="rolep" style={{color:"whitesmoke",border:"none" ,fontFamily:"Arial, sans-serif", fontSize:"small"}} >Winner</span> : <span className="rolep">Participant</span>
-                          }
+                          <p style={{ color: value.isWinner ? 'white' : 'black' }} className="maipadd">
+                            <span className="pname">{value.name}</span>
+                            <br />
+                            {
+                              value.isWinner ? <span className="rolep" style={{ color: "whitesmoke", border: "none", fontFamily: "Arial, sans-serif", fontSize: "small" }} >Winner</span> : <span className="rolep">Participant</span>
+                            }
 
-                        </p>
+                          </p>
+                        </div>
+                        <AiFillTrophy className="parttrophy" />
                       </div>
-                      <AiFillTrophy className="parttrophy" />
-                    </div>
-                  </li>
-                ))}
-              </ol>
+                    </li>
+                  ))}
+                </ol>
+              </div>
             </div>
-          </div>
-        </Modal>
-</div>
+          </Modal>
+        </div>
 
         <table className='data-table' cellSpacing={0}>
           <thead>
@@ -654,31 +661,68 @@ function AdminDashboard() {
             </tr>
           </thead>
           <tbody>
-            {totalLuckyDraws.map((value, index) => (
-              <tr className='elements' key={index}>
-                <td>{index + 1}</td>
-                <td className='empty-4'>{value.name}</td>
-                <td className='empty-3'>{value.code}</td>
-                <td className='empty-2'>{value.totalUsers}</td>
-                <td className='empty'>
-                 
-                  <button className={value.isActive ? 'status-active' : 'status-inactive'} onClick={() => {
-                    value.isActive
-                      ? startLuckyDraw(value.code)
-                      : alert("Lucky Draw already Drawn")
-                  }
-                  }>
-                    {value.isActive ? 'Start Now' : 'Completed'}
-                  </button>
-                </td>
 
-                <td className='leadparent'>
-                  <p className='leadbord' onClick={() => openLeaderboardModal(value.users, value.winner)}> <span ><CiShare1  /></span>  <span>Participants</span></p>
-                  <AiOutlineDelete size={25} className='delete' onClick={() => deleteDocument(value.docId)} />
-                </td>
 
-              </tr>
-            ))}
+            {/* WORK HERE */}
+
+            {totalLuckyDraws.map((value, index) => {
+              {
+                if (!search) {
+                  return <tr className='elements' key={index}>
+                    <td>{index + 1}</td>
+                    <td className='empty-4'>{value.name}</td>
+                    <td className='empty-3'>{value.code}</td>
+                    <td className='empty-2'>{value.totalUsers}</td>
+                    <td className='empty'>
+
+                      <button className={value.isActive ? 'status-active' : 'status-inactive'} onClick={() => {
+                        value.isActive
+                          ? startLuckyDraw(value.code)
+                          : alert("Lucky Draw already Drawn")
+                      }
+                      }>
+                        {value.isActive ? 'Start Now' : 'Completed'}
+                      </button>
+                    </td>
+
+                    <td className='leadparent'>
+                      <p className='leadbord' onClick={() => openLeaderboardModal(value.users, value.winner)}> <span ><CiShare1 /></span>  <span>Participants</span></p>
+                      <AiOutlineDelete size={25} className='delete' onClick={() => deleteDocument(value.docId)} />
+                    </td>
+
+                  </tr>
+                }
+
+                else if (value.name.toLowerCase().includes(search.toLowerCase())) {
+                
+                  return <tr className='elements' key={index}>
+                    <td>{index + 1}</td>
+                    <td className='empty-4'>{value.name}</td>
+                    <td className='empty-3'>{value.code}</td>
+                    <td className='empty-2'>{value.totalUsers}</td>
+                    <td className='empty'>
+
+                      <button className={value.isActive ? 'status-active' : 'status-inactive'} onClick={() => {
+                        value.isActive
+                          ? startLuckyDraw(value.code)
+                          : alert("Lucky Draw already Drawn")
+                      }
+                      }>
+                        {value.isActive ? 'Start Now' : 'Completed'}
+                      </button>
+                    </td>
+
+                    <td className='leadparent'>
+                      <p className='leadbord' onClick={() => openLeaderboardModal(value.users, value.winner)}> <span ><CiShare1 /></span>  <span>Participants</span></p>
+                      <AiOutlineDelete size={25} className='delete' onClick={() => deleteDocument(value.docId)} />
+                    </td>
+
+                  </tr>
+                }
+              }
+
+
+            })}
           </tbody>
         </table>
       </div>
