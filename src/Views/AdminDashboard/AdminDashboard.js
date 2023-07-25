@@ -8,6 +8,8 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { AiFillEdit } from 'react-icons/ai';
 import { TiPlusOutline } from 'react-icons/ti';
 import { CiShare1 } from 'react-icons/ci';
+import limg from '../../Images/Union 1.svg'
+import aliy from '../../Images/aaa.png';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTotalLuckyDraw } from '../../Store/Slices/LuckyDrawSlice';
@@ -154,7 +156,16 @@ function AdminDashboard() {
   // useEffect(() => {
   //   refreshLuckyDraws()
   // }, [])
+///userwait modal
+const [alishaModalIsOpen, setAlishaModalIsOpen] = useState(false);
 
+  const openAlishaModal = () => {
+    setAlishaModalIsOpen(true);
+  };
+
+  const closeAlishaModal = () => {
+    setAlishaModalIsOpen(false);
+  };
 
   // Modal Work
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -163,6 +174,7 @@ function AdminDashboard() {
   const [newLuckyDrawDate, setNewLuckyDrawDate] = useState("");
   const [newLuckyDrawTime, setNewLuckyDrawTime] = useState("");
   const [newLuckyDrawImage, setNewLuckyDrawImage] = useState(null);
+  const [newLuckyDrawType, setNewLuckyDrawType] = useState('');
 
 
   const [displayName, setDisplayName] = useState("")
@@ -469,68 +481,67 @@ function AdminDashboard() {
 
 
         <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          className="ali_modal"
-          overlayClassName="ali_overlay"
-          closeTimeoutMS={200}
-        >
-          <div className="ali_modal-header">
-            <h3 className='ali_mainhead'>Create Lucky Draw</h3>
-            <button className="ali_close-button" onClick={closeModal}>
-              &times;
-            </button>
+      isOpen={modalIsOpen}
+      onRequestClose={closeModal}
+      className="ali_modal"
+      overlayClassName="ali_overlay"
+      closeTimeoutMS={200}
+    >
+      <div className="ali_modal-header">
+        <h3 className='ali_mainhead'>Create Lucky Draw</h3>
+        <button className="ali_close-button" onClick={closeModal}>
+          &times;
+        </button>
+      </div>
+
+      <div className="ali_modal-content">
+        <label htmlFor="image" className="ali_text" onClick={handleChooseFile}>
+          <div className="ali_imagelogo">
+            <img src={pic} alt="" className="ali_image-icon" />
+          </div>
+          {newLuckyDrawImage ? `Image: ${newLuckyDrawImage[0].name}` : 'Add image'}
+        </label>
+
+        <form onSubmit={createNewLuckyDraw}>
+          <input
+            type="file"
+            id="imageInput"
+            accept="image/*"
+            onChange={handleImageUpload}
+            style={{ display: 'none' }}
+          />
+
+          <input   style={{marginTop:"20px",marginBottom:"20px"}}
+            className='ali_nameinput'
+            type="text"
+            id="name"
+            value={newLuckyDrawName}
+            onChange={(e) => setNewLuckyDrawName(e.target.value)}
+            placeholder="Name"
+            required
+          />
+
+        <div >
+          <select style={{marginBottom:"50px"}}
+  className='ali_nameinput '
+  value={newLuckyDrawType}
+  onChange={(e) => setNewLuckyDrawType(e.target.value)}
+  required
+>
+  <option disabled value="" hidden>Select Lucky Draw Type</option>
+  <option value="Paid">Paid</option>
+  <option value="Free">Free</option>
+</select>
+
+     
           </div>
 
-          <div className="ali_modal-content" >
-            <label htmlFor="image" className="ali_text" onClick={handleChooseFile}>
-              <div className="ali_imagelogo">
-                <img src={pic} alt="" className="ali_image-icon" />
-              </div>
-              {newLuckyDrawImage ? `Image: ${newLuckyDrawImage[0].name}` : 'Add image'}
-            </label>
-            <form onSubmit={createNewLuckyDraw} >
-              <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                onChange={handleImageUpload}
-                style={{ display: 'none' }}
-              // required
-              />
+          {/* ... */}
 
-              <input
-                className='ali_nameinput'
-                type="text"
-                id="name"
-                value={newLuckyDrawName}
-                onChange={(e) => setNewLuckyDrawName(e.target.value)}
-                placeholder=" Name"
-                required
-              />
-
-              {/* <input
-              className='ali_nameinput'
-              placeholder="Expires on (Date)"
-              value={newLuckyDrawDate}
-              onChange={(e) => setNewLuckyDrawDate(e.target.value)}
-              type="date"
-              required
-            />
-
-            <input
-              className='ali_nameinput'
-              placeholder="Expires on (Time)"
-              value={newLuckyDrawTime}
-              onChange={(e) => setNewLuckyDrawTime(e.target.value)}
-              type="time"
-              required
-            /> */}
-
-              <button className='ali_createbutton'>Create</button>
-            </form>
-          </div>
-        </Modal>
+          <button className='ali_createbutton'>Create</button>
+        </form>
+      </div>
+    </Modal>
 
         <Modal
           isOpen={shareModalIsOpen}
@@ -650,81 +661,111 @@ function AdminDashboard() {
         </div>
 
         <table className='data-table' cellSpacing={0}>
-          <thead>
-            <tr>
-              <th className='thh'>#</th>
-              <th className='thh empty-4'>Name</th>
-              <th className='thh empty-3'>Code</th>
-              <th className='thh empty-2'>Participants</th>
-              <th className='thh empty'>Status</th>
-              <th className='thh'>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+  <thead>
+    <tr>
+      <th className='thh'>#</th>
+      <th className='thh empty-4'>Name</th>
+      <th className='thh empty-3'>Code</th>
+      <th className='thh empty-2'>Participants</th>
+      <th className='thh empty'>
+        Type
+  
+      </th>
+      <th className='thh empty'>Status</th>
+      <th className='thh'>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {/* WORK HERE */}
+    {totalLuckyDraws.map((value, index) => {
+      const type = Math.random() < 0.5 ? "Paid" : "Free";
+
+      if (!search || value.name.toLowerCase().includes(search.toLowerCase())) {
+        return (
+          <tr className="elements" key={index}>
+  <td>{index + 1}</td>
+  <td className="empty-4">{value.name}</td>
+  <td className="empty-3">{value.code}</td>
+  <td className="empty-2">{value.totalUsers} 
+    <div className="ai_image-container"  onClick={openAlishaModal}>
+      <img src={limg} alt="Participants" className="ai_participant-image" />
+      <span className="ai_image-text">{`${value.totalUsers} participants waiting`}</span>
+    </div>
+  </td>
+  <Modal
+        className="meh_alishamodal"
+        overlayClassName="meh_alishaoverlay"
+        isOpen={alishaModalIsOpen}
+        onRequestClose={closeAlishaModal}
+        // Rest of your modal configuration...
+      >
+        <div className="meh_modal-content">
+          <h3 className="meh_modal-heading">Participants waiting to join {value.name}</h3>
+          <table>
+            <thead>
+            <tr  className='me_space' >
+          
+                <th  >Participant Name</th>
+                <th  >Receipts</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr className='mr_tr' >
+                <td>{value.name}</td>
+                <td style={{color:"red", textDecoration:"underline"}}>receipt1.png</td>
+                <td>
+                <span className="meh_action-icon">&#10005;</span>
+                  <span className="meh_action-icon1">&#10003;</span>
+
+                </td>
+              </tr>
+              <tr className='mr_tr' >
+                <td>{value.name}</td>
+                <td style={{color:"red", textDecoration:"underline"}}>receiptali.png</td>
+                <td>
+                  <span className="meh_action-icon">&#10005;</span>
+                  <span className="meh_action-icon1">&#10003;</span>
+                </td>
+              </tr>
+              {/* Add more participants rows as needed */}
+            </tbody>
+          </table>
+        </div>
+        <button className='lm_btn'>Approve all</button>
+      </Modal>
+  <td className="empty">
+    <button className={type === "Paid" ? "paid" : "free"}>
+      {type}
+    </button>
+  </td>
+            <td className='empty'>
+              <button
+                className={value.isActive ? 'status-active' : 'status-inactive'}
+                onClick={() => {
+                  value.isActive
+                    ? startLuckyDraw(value.code)
+                    : alert("Lucky Draw already Drawn")
+                }}
+              >
+                {value.isActive ? 'Start Now' : 'Completed'}
+              </button>
+            </td>
+            <td className='leadparent'>
+              <p className='leadbord' onClick={() => openLeaderboardModal(value.users, value.winner)}>
+                <span><CiShare1 /></span> <span>Participants</span>
+              </p>
+              <AiOutlineDelete size={25} className='delete' onClick={() => deleteDocument(value.docId)} Delete />
+            </td>
+          </tr>
+        );
+      }
+    })}
+  </tbody>
+</table>
 
 
-            {/* WORK HERE */}
 
-            {totalLuckyDraws.map((value, index) => {
-              {
-                if (!search) {
-                  return <tr className='elements' key={index}>
-                    <td>{index + 1}</td>
-                    <td className='empty-4'>{value.name}</td>
-                    <td className='empty-3'>{value.code}</td>
-                    <td className='empty-2'>{value.totalUsers}</td>
-                    <td className='empty'>
-
-                      <button className={value.isActive ? 'status-active' : 'status-inactive'} onClick={() => {
-                        value.isActive
-                          ? startLuckyDraw(value.code)
-                          : alert("Lucky Draw already Drawn")
-                      }
-                      }>
-                        {value.isActive ? 'Start Now' : 'Completed'}
-                      </button>
-                    </td>
-
-                    <td className='leadparent'>
-                      <p className='leadbord' onClick={() => openLeaderboardModal(value.users, value.winner)}> <span ><CiShare1 /></span>  <span>Participants</span></p>
-                      <AiOutlineDelete size={25} className='delete' onClick={() => deleteDocument(value.docId)} />
-                    </td>
-
-                  </tr>
-                }
-
-                else if (value.name.toLowerCase().includes(search.toLowerCase())) {
-                
-                  return <tr className='elements' key={index}>
-                    <td>{index + 1}</td>
-                    <td className='empty-4'>{value.name}</td>
-                    <td className='empty-3'>{value.code}</td>
-                    <td className='empty-2'>{value.totalUsers}</td>
-                    <td className='empty'>
-
-                      <button className={value.isActive ? 'status-active' : 'status-inactive'} onClick={() => {
-                        value.isActive
-                          ? startLuckyDraw(value.code)
-                          : alert("Lucky Draw already Drawn")
-                      }
-                      }>
-                        {value.isActive ? 'Start Now' : 'Completed'}
-                      </button>
-                    </td>
-
-                    <td className='leadparent'>
-                      <p className='leadbord' onClick={() => openLeaderboardModal(value.users, value.winner)}> <span ><CiShare1 /></span>  <span>Participants</span></p>
-                      <AiOutlineDelete size={25} className='delete' onClick={() => deleteDocument(value.docId)} />
-                    </td>
-
-                  </tr>
-                }
-              }
-
-
-            })}
-          </tbody>
-        </table>
       </div>
     </div>
   </>

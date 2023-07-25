@@ -1,0 +1,341 @@
+.receipt-box {
+    position: relative;
+  display: flex;
+  flex-direction: column;
+margin-top: 90px;
+
+  height: 250px;
+    width: 370px;
+    margin-left: 250px;
+
+  background-color: white;
+  cursor: pointer;
+  }
+  
+  .receipt-box:hover {
+    border-color: #999;
+  }
+  
+  .receipt-text {
+    text-align: center;
+    color: red;
+    font-size: larger;
+
+    
+   
+  font-family: 'Times New Roman', Times, serif;
+    font-weight: 600;
+  }
+  
+  .uploaded-image-preview {
+    height: 200px;
+    width: 200px;
+  }
+  
+.receipt-text{
+    text-align: center;
+    color: red;
+    font-size: larger;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 600;
+}
+/* Modal Styles */
+.your-modal-class {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 400px;
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .zz-your-modal-class {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    width: 300px;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+  
+  /* Modal Header Styles */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  /* Modal Body Styles */
+  .modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .modal-option {
+    background-color: #eee;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .zzbutton-admin{
+    margin: 3rem auto 39px 280px;
+    width: 35%;
+    height: 50px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bolder;
+    border: none;
+    letter-spacing: 0px;
+    color: #ffffff;
+    background: #fbc531 0% 0% no-repeat padding-box;
+    border-radius: 8px;
+    opacity: 1;
+  }
+  
+  /* Modal Overlay Styles */
+  .your-modal-overlay-class {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+.zz_content-section-2{
+    width: 50%;
+    background-image: url("../../Images/bg-code.png");
+   
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    padding-top: 100px;
+}  
+.zzz_image-section-2 {
+    width: 50%;
+    height: 100vh;
+    background-image: url("../../Images/bg1.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    font-weight: bold;
+  }
+  .zzz_invision{
+color: white;
+text-align: center;
+opacity: 0.7;
+  }
+  .zzz_login{
+    text-align: center;
+    color: white;
+  }
+  .zz-your-modal-class{
+    width: 190px;
+    height: 120px;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+  .zzz_logo{
+  
+        color: red;
+        width: 40px;
+        height: 40px;
+        padding-Left: 160px;
+        padding-Top: 40%;
+      
+  }
+  .uploaded-image-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+  }
+  
+  .uploaded-image-preview {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+   height: 300px;
+   margin-top: 20px;
+   margin-right: 50px;
+  }
+  
+  
+  .uploaded-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: green;
+    font-size: 24px;
+  }
+  .waiting-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+margin-top: 80px;
+ margin-bottom: 250px;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  @media (min-width: 800px) and (max-width: 1050px) {
+    .zz_container-2{
+        flex-direction: column;
+        height: 100vh;
+      }
+        .zzz_image-section-2{
+          width: 100%;
+          height: 40%;
+        }
+        .zz-content-section-2{
+          width: 100%;
+        }
+        .image-content-2 {
+        
+          color: #ffffff;
+          height: 60%;
+          overflow: hidden;
+          margin: auto auto;
+          font-size: 20px;
+          letter-spacing: 45;
+        }
+        .zzzcontent-content-1{
+          width: 100%;
+        }
+        .receipt-box{
+          display: flex;
+          flex-direction: column;
+       
+          height: 200px;
+            width: 20px;
+        margin-left: 80px;
+          background-color: white;
+        }
+        .zz_content-section-2{
+          width: 100%;
+          height: 60%;
+        }
+      
+    }
+    
+    
+    @media (min-width: 200px) and (max-width: 800px) {
+    .zz_container-2{
+      flex-direction: column;
+      height: 100vh;
+    }
+      .zzz_image-section-2{
+        width: 100%;
+        height: 40%;
+      }
+      .zz-content-section-2{
+        width: 100%;
+      }
+      .image-content-2 {
+      
+        color: #ffffff;
+        height: 60%;
+        overflow: hidden;
+        margin: auto auto;
+        font-size: 20px;
+        letter-spacing: 45;
+      }
+      .zzzcontent-content-1{
+        width: 100%;
+      }
+      .receipt-box{
+        display: flex;
+        flex-direction: column;
+      margin-top: 8px;
+        height: 200px;
+          width: 270px;
+      margin-left: 70px;
+        background-color: white;
+      }
+      .zz_content-section-2{
+        width: 100%;
+        height: 60%;
+      }
+     .zzbutton-admin{
+        margin-left: 10px;
+        margin-bottom: 25px;
+     }
+     .zzz_login{
+        width: 100%;
+        text-align: center;
+
+     }
+     .waiting-section{
+        padding-top: 10px;
+        padding-bottom: 100px;
+      }
+      .receipt-box {
+    
+      height: 200px;
+        width: 250px;
+      }
+      
+      
+      .uploaded-image-preview {
+        height: 150px;
+        width: 150px;
+      }
+      
+      
+    }
+    

@@ -5,13 +5,14 @@ import { getFirestore } from 'firebase/firestore'
 import {getStorage} from "firebase/storage"
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDMXplb5cfUS0TculHOz_MCH8XKPYF1ccI",
-    authDomain: "luckydraw-is.firebaseapp.com",
-    projectId: "luckydraw-is",
-    storageBucket: "luckydraw-is.appspot.com",
-    messagingSenderId: "912358762809",
-    appId: "1:912358762809:web:221093016f47e98ae720e8"
-};
+    apiKey: "AIzaSyCjSzJyOjrh1Leu__bgdXJEWIUwbZILXOA",
+    authDomain: "lucky-draw-64408.firebaseapp.com",
+    databaseURL: "https://lucky-draw-64408-default-rtdb.firebaseio.com",
+    projectId: "lucky-draw-64408",
+    storageBucket: "lucky-draw-64408.appspot.com",
+    messagingSenderId: "822476918676",
+    appId: "1:822476918676:web:0db553da8509ff013dc981"
+  };
 
 
 const app = initializeApp(firebaseConfig);

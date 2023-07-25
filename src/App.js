@@ -11,6 +11,7 @@ import AdminLogin from './Views/AdminLogin/AdminLogin';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
+import Recipt from './Views/Recipt';
 
 function App() {
 
@@ -72,6 +73,7 @@ function App() {
     <Routes>
       <Route path='/' element={<Code />} />
       <Route path='/signup/:code' element={<Signup />} />
+      <Route path='/recipt/:code' element={<Recipt />} />
       {/* <Route path='/dashboard/:code' element={<Dashboard />} /> */}
       <Route path='/dashboard/:code' element={protectedRoute(<Dashboard />)} />
       <Route path='/admin-dashboard' element={adminProtection(<AdminDashboard />)} />
